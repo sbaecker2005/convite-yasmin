@@ -77,11 +77,19 @@
   let ytPlayer = null;
   let ytPronto = false;
 
-  // Nenhum dos arquivos de audio existe -> prepara o YouTube.
-  song.addEventListener('error', () => {
+  // Nenhum dos arquivos de audio existe -> usa o YouTube.
+  function semArquivo() {
+    if (modo === 'youtube') return;
     modo = 'youtube';
     prepararYT();
-  });
+  }
+
+  song.addEventListener('error', semArquivo);
+
+  // O <audio> comeca a carregar antes deste script rodar, entao o erro pode
+  // ter acontecido antes do listener existir. NETWORK_NO_SOURCE (3) quer
+  // dizer que o navegador ja tentou todos os <source> e nenhum serviu.
+  if (song.networkState === 3) semArquivo();
 
   function prepararYT() {
     if (ytPlayer || !CONFIG.youtubeId) return;
