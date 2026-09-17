@@ -1,0 +1,16 @@
+# O arquivo de musica fica so no computador, nao vai para o site publico.
+# Publicado, o site usa o clipe oficial do YouTube (ver CONFIG.youtubeId).
+musica.mp3
+ilha.mp3
+luan.mp3
+videoplayback.mp3
+*.mp3
+*.m4a
+*.ogg
+*.wav
+
+# lixo do sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+.claude/
