@@ -429,12 +429,20 @@ body{
    TELA 4 - confirmacao
    ========================================================= */
 .done{
-  position:fixed; inset:0; z-index:70; display:none; place-items:center; padding:20px;
+  position:fixed; inset:0; z-index:70; display:none; padding:20px;
   background:radial-gradient(ellipse at center,#43291f 0%,#180f0c 78%);
+  /* o resumo pode ficar mais alto que a tela: precisa rolar */
+  overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
 }
-.done.show{display:grid; animation:fadeIn .7s both}
+.done.show{display:flex; animation:fadeIn .7s both}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-#confetti{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+
+/* margin:auto centraliza quando cabe e encosta no topo quando nao cabe.
+   (place-items:center cortaria o topo e travaria a rolagem) */
+.done-card{margin:auto}
+
+/* fixo para nao rolar junto com o conteudo */
+#confetti{position:fixed; inset:0; width:100%; height:100%; pointer-events:none}
 .done-card{
   position:relative; z-index:2; text-align:center; max-width:460px; width:100%;
   padding:clamp(28px,6vw,48px);

@@ -84,12 +84,25 @@
     prepararYT();
   }
 
-  song.addEventListener('error', semArquivo);
+  // Quando se usa <source> filhos, o navegador dispara "error" em cada
+  // <source> e NAO no <audio> (song.error continua null). Entao o sinal
+  // confiavel e o networkState: 3 = NETWORK_NO_SOURCE, ou seja, tentou
+  // todos os <source> e nenhum serviu.
+  function checarAudio() {
+    if (song.networkState === 3) { semArquivo(); return true; }
+    return false;
+  }
 
-  // O <audio> comeca a carregar antes deste script rodar, entao o erro pode
-  // ter acontecido antes do listener existir. NETWORK_NO_SOURCE (3) quer
-  // dizer que o navegador ja tentou todos os <source> e nenhum serviu.
-  if (song.networkState === 3) semArquivo();
+  song.addEventListener('error', semArquivo);
+  song.querySelectorAll('source').forEach(src => {
+    src.addEventListener('error', () => setTimeout(checarAudio, 0));
+  });
+
+  // O <audio> comeca a carregar antes deste script rodar, entao o resultado
+  // pode chegar antes ou depois daqui. Olha agora e mais algumas vezes, para
+  // o player do YouTube ja estar pronto quando ela clicar.
+  checarAudio();
+  [150, 500, 1200, 2500].forEach(ms => setTimeout(checarAudio, ms));
 
   function prepararYT() {
     if (ytPlayer || !CONFIG.youtubeId) return;
@@ -132,6 +145,7 @@
 
   function tocar() {
     querSom = true;
+    checarAudio();            // pode ser que a falha so tenha sido notada agora
 
     if (modo === 'youtube') {
       if (ytPronto && ytPlayer) {
